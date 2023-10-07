@@ -1,6 +1,8 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
+from .models import Advertisement
+
 
 class AdvertisementViewSet(ModelViewSet):
     """ViewSet для объявлений."""
