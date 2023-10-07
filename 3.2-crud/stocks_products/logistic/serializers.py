@@ -5,7 +5,7 @@ from .models import Product, StockProduct, Stock
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['title', 'description']
+        fields = ['id', 'title', 'description']
 
 
 class ProductPositionSerializer(serializers.ModelSerializer):
@@ -23,12 +23,8 @@ class StockSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         positions = validated_data.pop('positions')
-        print(positions)
-
         stock_ = super().create(validated_data)
         stock_.save()
-        print(stock_)
-
         for position in positions:
             new_ = StockProduct(
                 stock=stock_,
@@ -44,14 +40,13 @@ class StockSerializer(serializers.ModelSerializer):
         positions = validated_data.pop('positions')
 
         stock = super().update(instance, validated_data)
-        stock_products = stock.positions.all()
 
         for position in positions:
-            product = stock_products.filter(product_id=position['product'])
-            product = product[0]
-            if product:
-                product.quantity = position['quantity']
-                product.price = position['price']
-                product.save()
+            StockProduct.objects.update_or_create(
+                stock=stock,
+                product=position['product'],
+                quantity=position['quantity'],
+                price=position['price'],
+                defaults={'price': 0, 'quantity': 0})
 
         return stock
