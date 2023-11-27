@@ -12,4 +12,4 @@ COPY . /usr/src/app
 
 EXPOSE 8000
 
-RUN cd /3.2-crud/stocks_products | python3 manage.py runserver 0.0.0.0:8000
+CMD ["python3", "/usr/src/app/3.2-crud/stocks_products/manage.py", "runserver", "0.0.0.0:8000"]
